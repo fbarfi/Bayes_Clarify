@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Quantities of interest from Bayesian fits (posterior draws), after the R package clarify"
 readme = "README.md"
 license = { text = "MIT" }
-authors = [{ name = "Badredine Arfi" }]
+authors = [{ name = "Badredine Arfi", email = "barfi@ufl.edu" }]
 requires-python = ">=3.9"
 dependencies = ["numpy>=1.22", "pandas>=1.4", "scipy>=1.8", "matplotlib>=3.5"]
 keywords = ["bayesian", "posterior", "marginal effects", "quantities of interest",
