@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bayes_clarify"
+version = "0.1.0"
+description = "Quantities of interest from Bayesian fits (posterior draws), after the R package clarify"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Badredine Arfi" }]
+requires-python = ">=3.9"
+dependencies = ["numpy>=1.22", "pandas>=1.4", "scipy>=1.8", "matplotlib>=3.5"]
+keywords = ["bayesian", "posterior", "marginal effects", "quantities of interest",
+            "clarify", "pymc", "stan", "political science"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
+[project.optional-dependencies]
+pymc = ["pymc>=5", "arviz"]
+test = ["pytest>=7"]
+
+[project.urls]
+Homepage = "https://github.com/fbarfi/bayes_clarify"
+Issues = "https://github.com/fbarfi/bayes_clarify/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

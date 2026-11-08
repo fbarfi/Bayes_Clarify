@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "bayes_clarify: quantities of interest from Bayesian fits"
+authors:
+  - family-names: Arfi
+    given-names: Badredine
+version: 0.1.0
+date-released: 2026-11-07
+license: MIT
+repository-code: "https://github.com/fbarfi/bayes_clarify"
+references:
+  - type: software
+    title: "clarify: Simulation-Based Inference for Regression Models"
+    authors:
+      - family-names: Greifer
+        given-names: Noah
+      - family-names: Worthington
+        given-names: Steven
+      - family-names: Iacus
+        given-names: Stefano
+      - family-names: King
+        given-names: Gary
+    notes: "R package; the design this package follows"
+  - type: article
+    title: "Making the Most of Statistical Analyses: Improving Interpretation and Presentation"
+    authors:
+      - family-names: King
+        given-names: Gary
+      - family-names: Tomz
+        given-names: Michael
+      - family-names: Wittenberg
+        given-names: Jason
+    journal: "American Journal of Political Science"
+    volume: 44
+    issue: 2
+    start: 347
+    end: 361
+    year: 2000

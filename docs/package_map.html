@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'></head><body style='margin:0'>
+<title>bayes_clarify Package Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one technical sheet, read top to bottom: architecture diagram,
+   the steps behind one quantity, the files, then the clarify mapping. */
+:root {
+  --bg: #f4f6f3;
+  --surface: #ffffff;
+  --ink: #1d2729;
+  --muted: #5a6769;
+  --line: #c6cfcc;
+  --accent: #1c6b85;      /* data flow, arrows */
+  --accent-soft: #e2eef2;
+  --core: #a4700f;        /* the Posterior and Draws objects */
+  --core-soft: #f6ecd8;
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121819; --surface: #1a2224; --ink: #e2e8e6; --muted: #95a3a3;
+    --line: #34413f; --accent: #63b4cd; --accent-soft: #17323b;
+    --core: #e0ae4c; --core-soft: #3a2f17; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121819; --surface: #1a2224; --ink: #e2e8e6; --muted: #95a3a3;
+  --line: #34413f; --accent: #63b4cd; --accent-soft: #17323b;
+  --core: #e0ae4c; --core-soft: #3a2f17; color-scheme: dark;
+}
+
+body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--f-body); }
+.page {
+  max-width: 1200px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 56px;
+  display: grid; gap: 40px;
+}
+header { display: grid; gap: 8px; max-width: 70ch; }
+.eyebrow { font: 500 12px/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+h1 { font: 600 clamp(28px, 4vw, 40px)/1.1 var(--f-display); margin: 0; text-wrap: balance; }
+h2 { font: 600 22px/1.2 var(--f-display); margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.lede { color: var(--muted); }
+code { font: 0.92em var(--f-mono); }
+section { display: grid; gap: 14px; }
+section > p { max-width: 72ch; color: var(--muted); }
+
+.figure { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); border-radius: 6px; }
+.figure svg { display: block; min-width: 1080px; width: 100%; height: auto; }
+
+/* svg styling through tokens */
+.col-h { font: 500 11px var(--f-mono); letter-spacing: .07em; fill: var(--muted); text-transform: uppercase; }
+.box { fill: var(--surface); stroke: var(--line); stroke-width: 1.2; }
+.box-in { fill: var(--bg); stroke: var(--line); stroke-width: 1.2; }
+.box-core { fill: var(--core-soft); stroke: var(--core); stroke-width: 1.4; }
+.box-q { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.2; }
+.t-title { font: 600 13px var(--f-body); fill: var(--ink); }
+.t-mono { font: 500 12.5px var(--f-mono); fill: var(--ink); }
+.t-code { font: 400 11.5px var(--f-mono); fill: var(--ink); }
+.t-sub { font: 400 11.5px var(--f-body); fill: var(--muted); }
+.t-core { font: 600 15px var(--f-display); fill: var(--core); }
+.t-num { font: 600 12px var(--f-mono); fill: var(--accent); }
+.sep { stroke: var(--core); stroke-width: 1; stroke-dasharray: 3 3; opacity: .6; }
+.wire { stroke: var(--accent); stroke-width: 1.4; fill: none; }
+.arrowhead { fill: var(--accent); }
+
+.files { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 12px; }
+.file { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.file h3 { margin: 0; font: 500 14px var(--f-mono); color: var(--accent); }
+.file.core h3 { color: var(--core); }
+.file p { color: var(--muted); font-size: 14px; }
+.file ul { margin: 0; padding-left: 18px; font: 13px/1.6 var(--f-mono); overflow-wrap: anywhere; }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: 14px; }
+th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 500 11px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+td code { white-space: nowrap; }
+td.r { font-family: var(--f-mono); font-size: 13px; color: var(--muted); }
+</style>
+
+<div class="page">
+  <header>
+    <span class="eyebrow">bayes_clarify 0.1.0 · package map</span>
+    <h1>How bayes_clarify turns posterior draws into quantities of interest</h1>
+    <p class="lede">A fitted model enters through one of three constructors and becomes a <code>Posterior</code>. Four functions turn it into <code>Draws</code>: posterior draws of each quantity, which you summarize, transform, combine and plot.</p>
+  </header>
+
+  <section aria-labelledby="h-arch">
+    <h2 id="h-arch">Architecture</h2>
+    <div class="figure">
+      <svg viewBox="0 0 1180 312" role="img" aria-label="Flow from the fitted model through the Posterior constructors and the Posterior object to the four quantity functions and the Draws object">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path class="arrowhead" d="M0,0 L10,5 L0,10 z"/>
+          </marker>
+        </defs>
+
+        <!-- column headings -->
+        <text class="col-h" x="10" y="26">Your fit</text>
+        <text class="col-h" x="245" y="26">Build a Posterior</text>
+        <text class="col-h" x="515" y="26">Posterior</text>
+        <text class="col-h" x="790" y="26">Quantities of interest</text>
+        <text class="col-h" x="1035" y="26">Draws</text>
+
+        <!-- column 1: inputs -->
+        <rect class="box-in" x="10" y="44" width="180" height="56" rx="5"/>
+        <text class="t-mono" x="22" y="67">draws</text>
+        <text class="t-sub" x="22" y="86">any sampler: PyMC, Stan, R…</text>
+        <rect class="box-in" x="10" y="112" width="180" height="56" rx="5"/>
+        <text class="t-mono" x="22" y="135">data</text>
+        <text class="t-sub" x="22" y="154">DataFrame of the N units</text>
+        <rect class="box-in" x="10" y="180" width="180" height="56" rx="5"/>
+        <text class="t-mono" x="22" y="203">pm.Model</text>
+        <text class="t-sub" x="22" y="222">inputs as pm.Data</text>
+        <rect class="box-in" x="10" y="248" width="180" height="56" rx="5"/>
+        <text class="t-mono" x="22" y="271">predict(params, df)</text>
+        <text class="t-sub" x="22" y="290">your numpy function</text>
+
+        <!-- bus 1 -> 2 -->
+        <path class="wire" d="M190,72 H218 M190,140 H218 M190,208 H218 M190,276 H218 M218,72 V276"/>
+        <path class="wire" d="M218,80 H243" marker-end="url(#ah)"/>
+        <path class="wire" d="M218,164 H243" marker-end="url(#ah)"/>
+        <path class="wire" d="M218,248 H243" marker-end="url(#ah)"/>
+
+        <!-- column 2: constructors -->
+        <rect class="box" x="245" y="44" width="215" height="72" rx="5"/>
+        <text class="t-mono" x="257" y="67">Posterior(…)</text>
+        <text class="t-sub" x="257" y="86">any model: you write predict</text>
+        <text class="t-sub" x="257" y="103">draws via draws_from_*(…)</text>
+        <rect class="box" x="245" y="128" width="215" height="72" rx="5"/>
+        <text class="t-mono" x="257" y="151">.from_linear(…)</text>
+        <text class="t-sub" x="257" y="170">GLM: link⁻¹(a + X b)</text>
+        <text class="t-sub" x="257" y="187">identity, logit, probit, log, cloglog</text>
+        <rect class="box" x="245" y="212" width="215" height="72" rx="5"/>
+        <text class="t-mono" x="257" y="235">.from_pymc(…)</text>
+        <text class="t-sub" x="257" y="254">pm.set_data, then</text>
+        <text class="t-sub" x="257" y="271">sample_posterior_predictive</text>
+
+        <!-- bus 2 -> 3 -->
+        <path class="wire" d="M460,80 H487 M460,164 H487 M460,248 H487 M487,80 V248"/>
+        <path class="wire" d="M487,164 H513" marker-end="url(#ah)"/>
+
+        <!-- column 3: Posterior -->
+        <rect class="box-core" x="515" y="44" width="220" height="250" rx="6"/>
+        <text class="t-core" x="529" y="70">Posterior</text>
+        <text class="t-code" x="529" y="94">draws  {name: (S, …)}</text>
+        <text class="t-code" x="529" y="113">data   N units</text>
+        <text class="t-code" x="529" y="132">predict(df) → (S, N[, C])</text>
+        <text class="t-sub"  x="541" y="149">chunks draws (max_elems)</text>
+        <text class="t-code" x="529" y="168">predict_many([df, …])</text>
+        <text class="t-code" x="529" y="187">n_draws → thin</text>
+        <line class="sep" x1="529" y1="202" x2="721" y2="202"/>
+        <text class="t-core" x="529" y="225" style="font-size:13px">PymcPosterior</text>
+        <text class="t-sub" x="529" y="244">stacks data sets (max_rows),</text>
+        <text class="t-sub" x="529" y="261">one PyMC call per quantity,</text>
+        <text class="t-sub" x="529" y="278">restores the model data</text>
+
+        <!-- bus 3 -> 4 -->
+        <path class="wire" d="M735,164 H762 M762,70 V262"/>
+        <path class="wire" d="M762,70 H788" marker-end="url(#ah)"/>
+        <path class="wire" d="M762,134 H788" marker-end="url(#ah)"/>
+        <path class="wire" d="M762,198 H788" marker-end="url(#ah)"/>
+        <path class="wire" d="M762,262 H788" marker-end="url(#ah)"/>
+
+        <!-- column 4: quantities -->
+        <rect class="box-q" x="790" y="44" width="190" height="52" rx="5"/>
+        <text class="t-mono" x="802" y="66">sim_params · sim_apply</text>
+        <text class="t-sub" x="802" y="85">functions of the draws</text>
+        <rect class="box-q" x="790" y="108" width="190" height="52" rx="5"/>
+        <text class="t-mono" x="802" y="130">sim_setx</text>
+        <text class="t-sub" x="802" y="149">profiles, first difference</text>
+        <rect class="box-q" x="790" y="172" width="190" height="52" rx="5"/>
+        <text class="t-mono" x="802" y="194">sim_ame</text>
+        <text class="t-sub" x="802" y="213">levels, contrasts, AME</text>
+        <rect class="box-q" x="790" y="236" width="190" height="52" rx="5"/>
+        <text class="t-mono" x="802" y="258">sim_predictions</text>
+        <text class="t-sub" x="802" y="277">across values: levels, slopes</text>
+
+        <!-- bus 4 -> 5 -->
+        <path class="wire" d="M980,70 H1007 M980,134 H1007 M980,198 H1007 M980,262 H1007 M1007,70 V262"/>
+        <path class="wire" d="M1007,164 H1033" marker-end="url(#ah)"/>
+
+        <!-- column 5: Draws -->
+        <rect class="box-core" x="1035" y="44" width="135" height="250" rx="6"/>
+        <text class="t-core" x="1049" y="70">Draws</text>
+        <text class="t-code" x="1049" y="94">values (S, K)</text>
+        <text class="t-code" x="1049" y="113">names, info</text>
+        <line class="sep" x1="1049" y1="128" x2="1156" y2="128"/>
+        <text class="t-code" x="1049" y="152">.summary()</text>
+        <text class="t-code" x="1049" y="174">.transform()</text>
+        <text class="t-code" x="1049" y="196">.concat()</text>
+        <text class="t-code" x="1049" y="218">.plot()</text>
+        <text class="t-code" x="1049" y="240">.to_frame()</text>
+        <text class="t-sub" x="1049" y="268">median, ETI / HDI,</text>
+        <text class="t-sub" x="1049" y="285">Pr(&gt;0), Pr(&lt;0)</text>
+      </svg>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-steps">
+    <h2 id="h-steps">What happens inside one quantity</h2>
+    <p><code>sim_setx</code>, <code>sim_ame</code> and <code>sim_predictions</code> all run the same five steps, draw by draw. Only the change made in step 1 differs. <code>sim_apply</code> and <code>sim_params</code> skip steps 1 to 3: they work on the parameter draws directly.</p>
+    <div class="figure">
+      <svg viewBox="0 0 1180 112" role="img" aria-label="Five steps: set, predict, average, collect, summarize">
+        <defs>
+          <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path class="arrowhead" d="M0,0 L10,5 L0,10 z"/>
+          </marker>
+        </defs>
+        <g>
+          <rect class="box" x="10" y="14" width="200" height="84" rx="5"/>
+          <text class="t-num" x="22" y="38">1</text><text class="t-title" x="38" y="38">Set</text>
+          <text class="t-sub" x="22" y="60">copy the data with var = v,</text>
+          <text class="t-sub" x="22" y="78">or var ± h/2 for a derivative</text>
+        </g>
+        <path class="wire" d="M210,56 H252" marker-end="url(#ah2)"/>
+        <g>
+          <rect class="box" x="254" y="14" width="200" height="84" rx="5"/>
+          <text class="t-num" x="266" y="38">2</text><text class="t-title" x="282" y="38">Predict</text>
+          <text class="t-sub" x="266" y="60">expected outcome of every</text>
+          <text class="t-sub" x="266" y="78">unit, per draw: (S, N[, C])</text>
+        </g>
+        <path class="wire" d="M454,56 H496" marker-end="url(#ah2)"/>
+        <g>
+          <rect class="box" x="498" y="14" width="200" height="84" rx="5"/>
+          <text class="t-num" x="510" y="38">3</text><text class="t-title" x="526" y="38">Average</text>
+          <text class="t-sub" x="510" y="60">over units, within subset,</text>
+          <text class="t-sub" x="510" y="78">by-groups, weights: (S[, C])</text>
+        </g>
+        <path class="wire" d="M698,56 H740" marker-end="url(#ah2)"/>
+        <g>
+          <rect class="box" x="742" y="14" width="200" height="84" rx="5"/>
+          <text class="t-num" x="754" y="38">4</text><text class="t-title" x="770" y="38">Collect</text>
+          <text class="t-sub" x="754" y="60">one column per quantity,</text>
+          <text class="t-sub" x="754" y="78">contrast or outcome: Draws</text>
+        </g>
+        <path class="wire" d="M942,56 H984" marker-end="url(#ah2)"/>
+        <g>
+          <rect class="box-core" x="986" y="14" width="184" height="84" rx="5"/>
+          <text class="t-num" x="998" y="38">5</text><text class="t-title" x="1014" y="38">Summarize</text>
+          <text class="t-sub" x="998" y="60">median, ETI or HDI,</text>
+          <text class="t-sub" x="998" y="78">Pr(&gt;0); or plot</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-files">
+    <h2 id="h-files">Files</h2>
+    <div class="files">
+      <div class="file core">
+        <h3>posterior.py</h3>
+        <p>The draws, the data and the prediction rule.</p>
+        <ul>
+          <li>Posterior, PymcPosterior</li>
+          <li>.from_idata, .from_linear, .from_pymc</li>
+          <li>typical_values</li>
+          <li>LINKS</li>
+        </ul>
+      </div>
+      <div class="file">
+        <h3>quantities.py</h3>
+        <p>The quantities of interest, after clarify.</p>
+        <ul>
+          <li>sim_apply, sim_params</li>
+          <li>sim_setx, sim_ame, sim_predictions</li>
+          <li>CONTRASTS</li>
+        </ul>
+      </div>
+      <div class="file core">
+        <h3>draws.py</h3>
+        <p>The result object and its intervals.</p>
+        <ul>
+          <li>Draws: summary, transform, concat, plot, to_latex, to_frame</li>
+          <li>eti_bounds, hdi_bounds</li>
+        </ul>
+      </div>
+      <div class="file">
+        <h3>plotting.py</h3>
+        <p>Curves with bands across the values of a variable; point-and-interval rows otherwise.</p>
+        <ul><li>plot_draws</li></ul>
+      </div>
+      <div class="file">
+        <h3>sources.py</h3>
+        <p>Posterior draws from any sampler, as arrays.</p>
+        <ul>
+          <li>draws_from_idata, draws_from_cmdstanpy</li>
+          <li>draws_from_numpyro, draws_from_table</li>
+        </ul>
+      </div>
+      <div class="file">
+        <h3>tests/ · examples/</h3>
+        <p>Checks against hand-computed values and a fitted PyMC model; examples for any model, PyMC, Stan and draws from R.</p>
+        <ul>
+          <li>test_core, test_sources, test_pymc</li>
+          <li>quickstart_any_model, pymc_logit, stan_cmdstanpy, from_r_draws</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-map">
+    <h2 id="h-map">From clarify to bayes_clarify</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>clarify (R)</th><th>bayes_clarify</th><th>What changes</th></tr></thead>
+        <tbody>
+          <tr><td class="r">sim(fit, n)</td><td><code>Posterior(…)</code>, <code>.from_linear</code>, <code>.from_pymc</code></td><td>posterior draws from any sampler instead of normal simulation; <code>n_draws=</code> thins</td></tr>
+          <tr><td class="r">sim_apply(s, FUN)</td><td><code>sim_apply(post, fn)</code>, <code>sim_params</code></td><td>fn is vectorized over draws by default</td></tr>
+          <tr><td class="r">sim_setx(s, x, x1)</td><td><code>sim_setx(post, x, x1)</code></td><td>profiles used are in <code>.info["profiles"]</code></td></tr>
+          <tr><td class="r">sim_ame(s, var, …)</td><td><code>sim_ame(post, var, contrast=, by=, subset=, weights=)</code></td><td>contrasts against a <code>reference</code> level</td></tr>
+          <tr><td class="r">sim_adrf(s, var, …)</td><td><code>sim_predictions(post, var, contrast="levels" | "slopes")</code></td><td>renamed; <code>sim_adrf</code> kept as an alias</td></tr>
+          <tr><td class="r">transform(est, …)</td><td><code>est.transform(RR=lambda d: …)</code></td><td>a function instead of an expression</td></tr>
+          <tr><td class="r">cbind(est1, est2)</td><td><code>Draws.concat(est1, est2)</code></td><td>same</td></tr>
+          <tr><td class="r">summary(est)</td><td><code>est.summary(interval="eti" | "hdi")</code></td><td>credible intervals; Pr(&gt;0), Pr(&lt;0) instead of p-values</td></tr>
+          <tr><td class="r">plot(est)</td><td><code>est.plot()</code></td><td>same</td></tr>
+          <tr><td class="r">—</td><td><code>est.to_latex(…)</code></td><td>new: a booktabs table of the summary</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+</body></html>
