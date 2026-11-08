@@ -4,6 +4,7 @@ title: "bayes_clarify: quantities of interest from Bayesian fits"
 authors:
   - family-names: Arfi
     given-names: Badredine
+    email: barfi@ufl.edu
 version: 0.1.0
 date-released: 2026-11-07
 license: MIT
